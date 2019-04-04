@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Kalkulator</string>
+    <string name="calculator">Calculator</string>
+    <string name="simple">Simple</string>
+    <string name="advanced">Advanced</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+    <string name="aboutInfo">Jakub Lipowski\nCreated in 2019</string>
+    <string name="backButton">Back</string>
+</resources>

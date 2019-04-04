@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kalkulator</string>
+    <string name="calculator">Kalkulator</string>
+    <string name="simple">Prosty</string>
+    <string name="advanced">Zaawansowany</string>
+    <string name="about">O autorze</string>
+    <string name="exit">Wyjscie</string>
+    <string name="aboutInfo">Jakub Lipowski\nStworzono w 2019</string>
+    <string name="backButton">Wróć</string>
+</resources>
