@@ -97,7 +97,6 @@ public class MainActivity extends FragmentActivity {
                                 public void run() {
                                     time.setText(DataProcessor.simpleDateFormat.format(System.currentTimeMillis()));
                                     DataProcessor.refresh();
-                                    System.out.println("Update time: " + DataProcessor.dateTime);
                                 }
                             });
                         }
@@ -158,17 +157,26 @@ public class MainActivity extends FragmentActivity {
     private void showAddItemDialog(Context c) {
         LinearLayout layout = new LinearLayout(c);
         layout.setOrientation(LinearLayout.VERTICAL);
+        final TextView widthInfo = new TextView(c);
+        widthInfo.setText("Szerokość geograficzna");
         final EditText width = new EditText(c);
         width.setHint("Szerokość geograficzna");
         width.setText(Double.toString(DataProcessor.widthGeo));
+        layout.addView(widthInfo);
         layout.addView(width);
+        final TextView heightInfo = new TextView(c);
+        heightInfo.setText("Długość geograficzna");
         final EditText heigth = new EditText(c);
         heigth.setHint("Długość geograficzna");
         heigth.setText(Double.toString(DataProcessor.heightGeo));
+        layout.addView(heightInfo);
         layout.addView(heigth);
         final EditText refreshRate = new EditText(c);
+        final TextView refreshInfo = new TextView(c);
+        refreshInfo.setText("Czas odświeżania (minuty)");
         refreshRate.setHint("Czas odświeżania (minuty)");
         refreshRate.setText(Integer.toString(DataProcessor.timeRefresh));
+        layout.addView(refreshInfo);
         layout.addView(refreshRate);
         AlertDialog dialog = new AlertDialog.Builder(c)
                 .setMessage("Ustawienia")

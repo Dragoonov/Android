@@ -38,8 +38,6 @@ class DataProcessor {
                 Integer.parseInt(new SimpleDateFormat("mm").format(System.currentTimeMillis())),
                 Integer.parseInt(new SimpleDateFormat("ss").format(System.currentTimeMillis())),
                 1,true);
-        System.out.println("Sekundy: " + dateTime.getSecond());
-        System.out.println("Minuty: " + dateTime.getMinute());
         calculator = new AstroCalculator(dateTime,location);
         sunInfo = calculator.getSunInfo();
         moonInfo = calculator.getMoonInfo();
@@ -108,7 +106,6 @@ class DataProcessor {
 
     static String getIllumination()
     {
-        System.out.println("Current moon info: " + moonInfo.getIllumination());
         return (moonInfo.getIllumination()*100)+"%";
     }
 
