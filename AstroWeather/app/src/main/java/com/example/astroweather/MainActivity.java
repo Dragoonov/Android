@@ -2,42 +2,25 @@ package com.example.astroweather;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Handler;
-import android.provider.ContactsContract;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextClock;
 import android.widget.TextView;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
@@ -67,12 +50,12 @@ public class MainActivity extends FragmentActivity {
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //DataProcessor d = DataProcessor.getInstance();
 
         boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
         if (tabletSize) {
@@ -99,7 +82,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
         time = findViewById(R.id.time);
-        time.setText(DataProcessor.sdf.format(System.currentTimeMillis()));
+        time.setText(DataProcessor.simpleDateFormat.format(System.currentTimeMillis()));
         data = findViewById(R.id.data);
         data.setText("Szerokość: " + DataProcessor.widthGeo + ", długość:" + DataProcessor.heightGeo);
 
@@ -112,12 +95,14 @@ public class MainActivity extends FragmentActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    time.setText(DataProcessor.sdf.format(System.currentTimeMillis()));
-                                    System.out.println("Update time");
+                                    time.setText(DataProcessor.simpleDateFormat.format(System.currentTimeMillis()));
+                                    DataProcessor.refresh();
+                                    System.out.println("Update time: " + DataProcessor.dateTime);
                                 }
                             });
                         }
                     } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             };
@@ -130,11 +115,10 @@ public class MainActivity extends FragmentActivity {
                 public void run() {
                     try {
                         while (!isInterrupted()) {
-                            Thread.sleep(DataProcessor.timeRefresh * 1000);
+                            Thread.sleep(DataProcessor.timeRefresh * 1000 * 60);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    time.setText(DataProcessor.sdf.format(System.currentTimeMillis()));
                                     DataProcessor.refresh();
                                     sun.update();
                                     moon.update();
@@ -143,10 +127,12 @@ public class MainActivity extends FragmentActivity {
                             });
                         }
                     } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             };
             t2.start();
+
         }
 
     @Override
@@ -174,12 +160,15 @@ public class MainActivity extends FragmentActivity {
         layout.setOrientation(LinearLayout.VERTICAL);
         final EditText width = new EditText(c);
         width.setHint("Szerokość geograficzna");
+        width.setText(Double.toString(DataProcessor.widthGeo));
         layout.addView(width);
         final EditText heigth = new EditText(c);
         heigth.setHint("Długość geograficzna");
+        heigth.setText(Double.toString(DataProcessor.heightGeo));
         layout.addView(heigth);
         final EditText refreshRate = new EditText(c);
-        refreshRate.setHint("Czas odświeżania (sekundy)");
+        refreshRate.setHint("Czas odświeżania (minuty)");
+        refreshRate.setText(Integer.toString(DataProcessor.timeRefresh));
         layout.addView(refreshRate);
         AlertDialog dialog = new AlertDialog.Builder(c)
                 .setMessage("Ustawienia")
@@ -187,10 +176,39 @@ public class MainActivity extends FragmentActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DataProcessor.update(Float.valueOf(width.getText().toString()),Float.valueOf(heigth.getText().toString()),Integer.valueOf(refreshRate.getText().toString()));
-                        sun.update();
-                        moon.update();
-                        data.setText("Szerokość: " + DataProcessor.widthGeo + ", długość:" + DataProcessor.heightGeo);
+                        try {
+                            if(Integer.valueOf(refreshRate.getText().toString())<=0)
+                                throw new NumberFormatException("Zly czas odswiezania");
+                            DataProcessor.update(Float.valueOf(width.getText().toString()), Float.valueOf(heigth.getText().toString()), Integer.valueOf(refreshRate.getText().toString()));
+                            sun.update();
+                            moon.update();
+                            data.setText("Szerokość: " + DataProcessor.widthGeo + ", długość:" + DataProcessor.heightGeo);
+                            t2.interrupt();
+                            t2 = new Thread() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        while (!isInterrupted()) {
+                                            Thread.sleep(DataProcessor.timeRefresh * 1000 * 60);
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    DataProcessor.refresh();
+                                                    sun.update();
+                                                    moon.update();
+                                                    System.out.println("Update time refresh");
+                                                }
+                                            });
+                                        }
+                                    } catch (InterruptedException e) {
+                                    }
+                                }
+                            };
+                            t2.start();
+                        }
+                        catch (Exception e) {
+                            Toast.makeText(getApplicationContext(),"Wpisz poprawne dane",Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -208,13 +226,13 @@ public class MainActivity extends FragmentActivity {
         FragmentManager fragmentManager;
         Fragment[] fragments;
 
-        public ListPagerAdapter(FragmentManager fm){
+        ListPagerAdapter(FragmentManager fm){
             fragmentManager = fm;
             fragments = new Fragment[2];
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
+        public void destroyItem(@NonNull ViewGroup container, int position,@NonNull Object object) {
             assert(0 <= position && position < fragments.length);
             FragmentTransaction trans = fragmentManager.beginTransaction();
             trans.remove(fragments[position]);
@@ -223,7 +241,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         @Override
-        public Fragment instantiateItem(ViewGroup container, int position){
+        public Fragment instantiateItem(@NonNull ViewGroup container, int position){
             Fragment fragment = getItem(position);
             FragmentTransaction trans = fragmentManager.beginTransaction();
             trans.add(container.getId(),fragment,"fragment:"+position);
@@ -237,11 +255,11 @@ public class MainActivity extends FragmentActivity {
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object fragment) {
+        public boolean isViewFromObject(@NonNull View view,@NonNull Object fragment) {
             return ((Fragment) fragment).getView() == view;
         }
 
-        public Fragment getItem(int position){
+        Fragment getItem(int position){
             assert(0 <= position && position < fragments.length);
             if(fragments[position] == null){
                 if(position==0)

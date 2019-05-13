@@ -1,10 +1,7 @@
 package com.example.astroweather;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -45,8 +42,6 @@ public class FragmentSun extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup view = (ViewGroup)inflater.inflate(R.layout.fragment_sun, container, false);
         view.setBackgroundColor(Color.WHITE);
-        DataProcessor.sunInflater = inflater;
-        DataProcessor.sunContainer = container;
         sunrise = view.findViewById(R.id.sunrise);
         sunset = view.findViewById(R.id.sunset);
         azimuthRise = view.findViewById(R.id.azimuthRise);
@@ -65,6 +60,7 @@ public class FragmentSun extends Fragment {
         azimuthSet.setText(DataProcessor.getAzimuthSet());
         twilightMorning.setText(DataProcessor.getTwilightMorning());
         twilightEvening.setText(DataProcessor.getTwilightEvening());
+
     }
 
 }

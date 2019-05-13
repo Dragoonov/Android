@@ -37,7 +37,7 @@
                     android:layout_weight="1"
                     android:gravity="left"
                     android:text="Wschód:"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/sunrise"
@@ -46,7 +46,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="wschód"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -61,7 +61,7 @@
                     android:layout_weight="1"
                     android:gravity="left"
                     android:text="Zachód:"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/sunset"
@@ -70,7 +70,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="TextView"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -85,7 +85,7 @@
                     android:layout_weight="1"
                     android:gravity="left"
                     android:text="Wschód\nAzymut:"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/azimuthRise"
@@ -94,7 +94,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="pelnia"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -108,7 +108,7 @@
                     android:layout_weight="1"
                     android:gravity="left"
                     android:text="Zachód\nAzymut:"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/azimuthSet"
@@ -117,7 +117,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="newmoon"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -132,7 +132,7 @@
                     android:layout_weight="1"
                     android:gravity="left"
                     android:text="Swit:"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/twilightMorning"
@@ -141,7 +141,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="twilightRise"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -156,7 +156,7 @@
                     android:layout_weight="1"
                     android:gravity="left"
                     android:text="Zmierzch:\t\t"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/twilightEvening"
@@ -165,7 +165,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="twilightSet"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
             </TableRow>
         </TableLayout>

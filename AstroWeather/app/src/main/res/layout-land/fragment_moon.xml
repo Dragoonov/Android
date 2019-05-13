@@ -32,7 +32,7 @@
                     android:gravity="left"
                     android:text="Wschód:"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/moonrise"
@@ -42,7 +42,7 @@
                     android:gravity="right"
                     android:text="wschód"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -58,7 +58,7 @@
                     android:gravity="left"
                     android:text="Zachód:"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/moonset"
@@ -68,7 +68,7 @@
                     android:gravity="right"
                     android:text="TextView"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -84,7 +84,7 @@
                     android:gravity="left"
                     android:text="Pełnia:"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/fullmoon"
@@ -94,7 +94,7 @@
                     android:gravity="right"
                     android:text="pelnia"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -110,7 +110,7 @@
                     android:gravity="left"
                     android:text="Nów:"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/newmoon"
@@ -120,7 +120,7 @@
                     android:gravity="right"
                     android:text="newmoon"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -136,7 +136,7 @@
                     android:gravity="left"
                     android:text="Faza księżyca"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/illumination"
@@ -146,7 +146,7 @@
                     android:gravity="right"
                     android:text="TextView"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
             </TableRow>
 
             <TableRow
@@ -162,7 +162,7 @@
                     android:gravity="left"
                     android:text="Dzień miesiąca \n synodycznego"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/age"
@@ -172,7 +172,7 @@
                     android:gravity="right"
                     android:text="TextView"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp" />
+                    android:textSize="18sp" />
 
             </TableRow>
         </TableLayout>
