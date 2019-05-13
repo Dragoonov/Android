@@ -32,8 +32,9 @@ public class SimpleCalculatorActivity extends AppCompatActivity {
     private TextView result;
 
     private void sendOperationToProcessor(String op) {
+        String resultText = result.getText().toString();
         try {
-            processor.addValue(Double.valueOf(result.getText().toString()).toString());
+            processor.addValue(Double.valueOf(resultText).toString());
             processor.addValue(op);
             result.setText("");
         }
@@ -44,9 +45,10 @@ public class SimpleCalculatorActivity extends AppCompatActivity {
 
     private void changeSign()
     {
+        String resultText = result.getText().toString();
         try {
-            if (result.getText().charAt(0) == '-')
-                result.setText(result.getText().subSequence(1, result.length()));
+            if (resultText.startsWith("-"))
+                result.setText(resultText.substring(1, result.length()));
             else
                 result.setText("-" + result.getText());
         }
@@ -56,9 +58,14 @@ public class SimpleCalculatorActivity extends AppCompatActivity {
     }
 
     private void getOutcome() {
+        String resultText = result.getText().toString();
         try {
-            processor.addValue(Double.valueOf(result.getText().toString()).toString());
+            processor.addValue(Double.valueOf(resultText).toString());
             result.setText(Double.toString(processor.compute()));
+            resultText = result.getText().toString();
+            double a = Double.valueOf(resultText);
+            if(a==(int)a)
+                result.setText(Integer.toString((int)a));
         }
         catch (NumberFormatException e) {
             Toast.makeText(getApplicationContext(), "Invalid number", Toast.LENGTH_SHORT).show();
@@ -122,5 +129,27 @@ public class SimpleCalculatorActivity extends AppCompatActivity {
                 result.setText(result.getText().subSequence(0,result.length()-1));
         });
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putString("key_name", result.getText().toString());
+        savedInstanceState.putStringArrayList("key_lista",processor.values);
+        savedInstanceState.putDouble("key_double",processor.powerValue);
+        savedInstanceState.putBoolean("key_booblean",processor.isPower);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        {
+            processor.values =  savedInstanceState.getStringArrayList("key_lista");
+            processor.isPower = savedInstanceState.getBoolean("key_booblean");
+            processor.powerValue = savedInstanceState.getDouble("key_double");
+            result.setText("" + savedInstanceState.getString("key_name"));
+
+        }
     }
 }

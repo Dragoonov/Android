@@ -6,10 +6,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 interface MyFunction<T>
 {
     T apply(T c);
@@ -52,11 +48,12 @@ public class AdvancedCalculatorActivity extends AppCompatActivity {
     private TextView result;
 
     private void changeSign() {
+        String resultText = result.getText().toString();
         try {
-            if (result.getText().charAt(0) == '-')
-                result.setText(result.getText().subSequence(1, result.length()));
+            if (resultText.startsWith("-"))
+                result.setText(resultText.substring(1, result.length()));
             else
-                result.setText("-" + result.getText());
+                result.setText("-" + resultText);
         }
         catch (Exception e){
             Toast.makeText(getApplicationContext(), "Cannot change sign", Toast.LENGTH_SHORT).show();
@@ -64,15 +61,27 @@ public class AdvancedCalculatorActivity extends AppCompatActivity {
     }
 
     private void getOutcome() {
+        String resultText = result.getText().toString();
         try {
-            if(processor.isPower()==true) {
-                processor.addValue(Double.toString(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString()))));
+            if(processor.isPower()) {
+                processor.addValue(Double.toString(Math.pow(processor.getPowerValue(),Double.valueOf(resultText))));
                 processor.setPower(false);
                 processor.setPowerValue(0);
             }
             else
-                processor.addValue(Double.valueOf(result.getText().toString()).toString());
+                processor.addValue(Double.valueOf(resultText).toString());
             result.setText(Double.toString(processor.compute()));
+
+            resultText = result.getText().toString();
+            double a = Double.valueOf(resultText);
+            if(a==(int)a)
+                result.setText(Integer.toString((int)a));
+            if(resultText.equals("Infinity") || resultText.equals("Nan"))
+            {
+                result.setText("");
+                throw new NumberFormatException();
+            }
+
         }
         catch (NumberFormatException e) {
             Toast.makeText(getApplicationContext(), "Invalid number", Toast.LENGTH_SHORT).show();
@@ -83,16 +92,19 @@ public class AdvancedCalculatorActivity extends AppCompatActivity {
     }
 
     private void sendOperationToProcessor(String op){
+        String resultText = result.getText().toString();
         try {
-            if(result.getText().charAt(result.length()-1)=='%')
-                result.setText(Double.valueOf(Double.valueOf(result.getText().subSequence(0,result.getText().length()-1).toString())/100.0).toString());
-            if(processor.isPower()==true) {
-                processor.addValue(Double.toString(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString()))));
+            if(resultText.endsWith("%")) {
+                result.setText(Double.toString(Double.valueOf(resultText.substring(0, resultText.length() - 1)) / 100.0));
+                resultText = result.getText().toString();
+            }
+            if(processor.isPower()) {
+                processor.addValue(Double.toString(Math.pow(processor.getPowerValue(),Double.valueOf(resultText))));
                 processor.setPower(false);
                 processor.setPowerValue(0);
             }
             else
-                processor.addValue(Double.valueOf(result.getText().toString()).toString());
+                processor.addValue(Double.valueOf(resultText).toString());
             processor.addValue(op);
             result.setText("");
         }
@@ -103,8 +115,13 @@ public class AdvancedCalculatorActivity extends AppCompatActivity {
 
     private void setPower()
     {
+        String resultText = result.getText().toString();
         try {
-            processor.setPowerValue(Double.valueOf(result.getText().toString()));
+            if(resultText.endsWith("%")) {
+                result.setText(Double.toString(Double.valueOf(resultText.substring(0, resultText.length() - 1)) / 100.0));
+                resultText = result.getText().toString();
+            }
+            processor.setPowerValue(Double.valueOf(resultText));
             processor.setPower(true);
             result.setText("");
         }
@@ -113,52 +130,31 @@ public class AdvancedCalculatorActivity extends AppCompatActivity {
         }
     }
 
-    private void performOperation(String op) {
+    private void performOperation(MyFunction<Double> fun) {
+        String resultText = result.getText().toString();
         try {
-            if(result.getText().charAt(result.length()-1)=='%')
-                result.setText(Double.valueOf(Double.valueOf(result.getText().subSequence(0,result.getText().length()-1).toString())/100.0).toString());
-            if(processor.isPower()==true) {
-                switch(op)
-                {
-                    case "square": result.setText(Double.toString(Math.pow(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString())),2))); break;
-                    case "log": result.setText(Double.toString(Math.log10(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString()))))); break;
-                    case "ln": result.setText(Double.toString(Math.log(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString()))))); break;
-                    case "sqrt": result.setText(Double.toString(Math.sqrt(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString()))))); break;
-                    case "sin":result.setText(Double.toString(Math.sin(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString()))))); break;
-                    case "cos":result.setText(Double.toString(Math.cos(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString()))))); break;
-                    case "tan":result.setText(Double.toString(Math.tan(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString()))))); break;
-                    case "proc":result.setText(Double.toString(100*(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString()))))+"%"); break;
-                }
+            if(resultText.endsWith("%")) {
+                result.setText(Double.toString(Double.valueOf(resultText.substring(0, resultText.length() - 1)) / 100.0));
+                resultText = result.getText().toString();
             }
-            else {
-                switch(op)
-                {
-                    case "square": result.setText(Double.toString(Math.pow(Double.valueOf(result.getText().toString()),2))); break;
-                    case "log": result.setText(Double.toString(Math.log10(Double.valueOf(result.getText().toString())))); break;
-                    case "ln": result.setText(Double.toString(Math.log(Double.valueOf(result.getText().toString())))); break;
-                    case "sqrt": result.setText(Double.toString(Math.sqrt(Double.valueOf(result.getText().toString())))); break;
-                    case "sin":result.setText(Double.toString(Math.sin(Double.valueOf(result.getText().toString())))); break;
-                    case "cos":result.setText(Double.toString(Math.cos(Double.valueOf(result.getText().toString())))); break;
-                    case "tan":result.setText(Double.toString(Math.tan(Double.valueOf(result.getText().toString())))); break;
-                    case "proc":result.setText(Double.toString(100*(Double.valueOf(result.getText().toString())))+"%"); break;
-                }
+            if(processor.isPower()) {
+                result.setText(Double.toString(Math.pow(processor.getPowerValue(), Double.valueOf(resultText))));
+                resultText = result.getText().toString();
             }
-            processor.setPower(false);
-            processor.setPowerValue(0);
-        }
-        catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Invalid number", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void performOperation2(MyFunction<Double> fun) {
-        try {
-            if(result.getText().charAt(result.length()-1)=='%')
-                result.setText(Double.valueOf(Double.valueOf(result.getText().subSequence(0,result.getText().length()-1).toString())/100.0).toString());
-            if(processor.isPower())
-                result.setText(Double.toString(Math.pow(processor.getPowerValue(),Double.valueOf(result.getText().toString()))));
-            result.setText(Double.toString(fun.apply(Double.valueOf(result.getText().toString()))));
+            result.setText(Double.toString(fun.apply(Double.valueOf(resultText))));
             result.setText(result.getText()+(procFlag?"%":""));
+            resultText = result.getText().toString();
+            if(!procFlag)
+            {
+                double a = Double.valueOf(resultText);
+                if (a == (int) a)
+                    result.setText(Integer.toString((int) a));
+            if(result.getText().equals("Infinity") || result.getText().equals("NaN"))
+            {
+                result.setText("");
+                throw new NumberFormatException();
+            }
+            }
             procFlag=false;
             processor.setPower(false);
             processor.setPowerValue(0);
@@ -226,26 +222,17 @@ public class AdvancedCalculatorActivity extends AppCompatActivity {
         powerButton.setOnClickListener(s -> setPower());
 
 
-        squareButton.setOnClickListener(s -> performOperation2(a->Math.pow(a,2)));
-        logButton.setOnClickListener(s -> performOperation2(Math::log10));
-        lnButton.setOnClickListener(s -> performOperation2(Math::log));
-        sqrtButton.setOnClickListener(s -> performOperation2(Math::sqrt));
-        sinButton.setOnClickListener(s -> performOperation2(Math::sin));
-        cosButton.setOnClickListener(s -> performOperation2(Math::cos));
-        tanButton.setOnClickListener(s -> performOperation2(Math::tan));
+        squareButton.setOnClickListener(s -> performOperation(a->Math.pow(a,2)));
+        logButton.setOnClickListener(s -> performOperation(Math::log10));
+        lnButton.setOnClickListener(s -> performOperation(Math::log));
+        sqrtButton.setOnClickListener(s -> performOperation(Math::sqrt));
+        sinButton.setOnClickListener(s -> performOperation(Math::sin));
+        cosButton.setOnClickListener(s -> performOperation(Math::cos));
+        tanButton.setOnClickListener(s -> performOperation(Math::tan));
         procButton.setOnClickListener(s -> {
                                             procFlag = true;
-                                            performOperation2(a->100*a);
+                                            performOperation(a->100*a);
                                             });
-
-       /* squareButton.setOnClickListener(s -> performOperation("square"));
-        logButton.setOnClickListener(s -> performOperation("log"));
-        lnButton.setOnClickListener(s -> performOperation("ln"));
-        sqrtButton.setOnClickListener(s -> performOperation("sqrt"));
-        sinButton.setOnClickListener(s -> performOperation("sin"));
-        cosButton.setOnClickListener(s -> performOperation("cos"));
-        tanButton.setOnClickListener(s -> performOperation("tan"));
-        procButton.setOnClickListener(s -> performOperation("proc"));*/
 
         bkspButton.setOnClickListener(s -> {
             if (result.getText().length() == 0)
@@ -253,5 +240,27 @@ public class AdvancedCalculatorActivity extends AppCompatActivity {
             else
                 result.setText(result.getText().subSequence(0,result.length()-1));
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putString("key_name", result.getText().toString());
+        savedInstanceState.putStringArrayList("key_lista",processor.values);
+        savedInstanceState.putDouble("key_double",processor.powerValue);
+        savedInstanceState.putBoolean("key_booblean",processor.isPower);
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        {
+            processor.values =  savedInstanceState.getStringArrayList("key_lista");
+            processor.isPower = savedInstanceState.getBoolean("key_booblean");
+            processor.powerValue = savedInstanceState.getDouble("key_double");
+            result.setText("" + savedInstanceState.getString("key_name"));
+        }
     }
 }

@@ -12,10 +12,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:background="@android:color/background_dark"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,12 +22,9 @@
         app:layout_constraintTop_toBottomOf="@+id/result">
 
         <TableRow
-            android:id="@+id/tableRow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@android:color/background_dark"
-            android:gravity="fill">
+            android:layout_weight="1">
 
             <Button
                 android:id="@+id/bkspButton"
@@ -42,42 +37,6 @@
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/clearButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="C"
-                android:textAlignment="gravity"
-                android:textSize="24sp" />
-
-            <Button
-                android:id="@+id/procButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="%"
-                android:textAlignment="gravity"
-                android:textSize="24sp" />
-
-            <Button
-                android:id="@+id/signButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="±"
-                android:textAlignment="gravity"
-                android:textSize="24sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
                 android:id="@+id/sinButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -88,42 +47,6 @@
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/cosButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="COS"
-                android:textAlignment="gravity"
-                android:textSize="24sp" />
-
-            <Button
-                android:id="@+id/tanButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="TAN"
-                android:textAlignment="gravity"
-                android:textSize="24sp" />
-
-            <Button
-                android:id="@+id/lnButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="LN"
-                android:textAlignment="gravity"
-                android:textSize="24sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
                 android:id="@+id/sqrtButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -132,42 +55,6 @@
                 android:text="SQRT"
                 android:textAlignment="gravity"
                 android:textSize="24sp" />
-
-            <Button
-                android:id="@+id/squareButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="X^2"
-                android:textAlignment="gravity"
-                android:textSize="24sp" />
-
-            <Button
-                android:id="@+id/powerButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="X^Y"
-                android:textAlignment="gravity"
-                android:textSize="24sp" />
-
-            <Button
-                android:id="@+id/logButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="LOG"
-                android:textAlignment="gravity"
-                android:textSize="24sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
 
             <Button
                 android:id="@+id/sevenButton"
@@ -216,6 +103,36 @@
             android:layout_weight="1">
 
             <Button
+                android:id="@+id/clearButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="C"
+                android:textAlignment="gravity"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/cosButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="COS"
+                android:textAlignment="gravity"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/squareButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="X^2"
+                android:textAlignment="gravity"
+                android:textSize="24sp" />
+
+            <Button
                 android:id="@+id/fourButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -262,6 +179,36 @@
             android:layout_weight="1">
 
             <Button
+                android:id="@+id/procButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="%"
+                android:textAlignment="gravity"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/tanButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="TAN"
+                android:textAlignment="gravity"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/powerButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="X^Y"
+                android:textAlignment="gravity"
+                android:textSize="24sp" />
+
+            <Button
                 android:id="@+id/oneButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -306,6 +253,36 @@
             android:layout_width="match_parent"
             android:layout_height="201dp"
             android:layout_weight="1">
+
+            <Button
+                android:id="@+id/signButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="±"
+                android:textAlignment="gravity"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/lnButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="LN"
+                android:textAlignment="gravity"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/logButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="LOG"
+                android:textAlignment="gravity"
+                android:textSize="24sp" />
 
             <Button
                 android:id="@+id/zeroButton"

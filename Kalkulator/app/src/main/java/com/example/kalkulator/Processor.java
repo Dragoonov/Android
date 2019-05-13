@@ -1,17 +1,18 @@
 package com.example.kalkulator;
 
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Processor {
-    private List<String> values;
+
+    ArrayList<String> values = new ArrayList<>();
 
 
-    private double powerValue=0;
-    private boolean isPower = false;
-    Processor()
-    {
-        values = new ArrayList<>();
+    double powerValue=0;
+    boolean isPower = false;
+    Processor(){
     }
 
     public boolean isPower() {
