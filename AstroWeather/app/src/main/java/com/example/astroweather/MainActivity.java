@@ -2,25 +2,46 @@ package com.example.astroweather;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
+import android.os.Handler;
+import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends FragmentActivity {
 
@@ -46,18 +67,28 @@ public class MainActivity extends FragmentActivity {
     PagerAdapter pagerAdapter;
     Thread t1 = null;
     Thread t2 = null;
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            DataProcessor.refresh();
+            sun.update();
+            moon.update();
+            System.out.println("Update time refresh");
+        }
+    };
+    Timer timer = new Timer();
 
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
-
+    boolean tabletSize = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tabletSize = getResources().getBoolean(R.bool.isTablet);
+        //DataProcessor d = DataProcessor.getInstance();
 
-
-        boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
         if (tabletSize) {
             linearLayout = findViewById(R.id.linearLayout2);
             fragmentManager = getSupportFragmentManager();
@@ -82,7 +113,7 @@ public class MainActivity extends FragmentActivity {
             }
         });
         time = findViewById(R.id.time);
-        time.setText(DataProcessor.simpleDateFormat.format(System.currentTimeMillis()));
+        time.setText(DataProcessor.sdf.format(System.currentTimeMillis()));
         data = findViewById(R.id.data);
         data.setText("Szerokość: " + DataProcessor.widthGeo + ", długość:" + DataProcessor.heightGeo);
 
@@ -95,43 +126,41 @@ public class MainActivity extends FragmentActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    time.setText(DataProcessor.simpleDateFormat.format(System.currentTimeMillis()));
-                                    DataProcessor.refresh();
+                                    time.setText(DataProcessor.sdf.format(System.currentTimeMillis()));
+                                    System.out.println("Update time");
                                 }
                             });
                         }
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
                 }
             };
             t1.start();
-
-
 
             t2 = new Thread() {
                 @Override
                 public void run() {
                     try {
                         while (!isInterrupted()) {
-                            Thread.sleep(DataProcessor.timeRefresh * 1000 * 60);
+                            Thread.sleep(DataProcessor.timeRefresh * 1000);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    //time.setText(DataProcessor.sdf.format(System.currentTimeMillis()));
                                     DataProcessor.refresh();
                                     sun.update();
                                     moon.update();
                                     System.out.println("Update time refresh");
+                                    Toast.makeText(getApplicationContext(), "Odswiezanie", Toast.LENGTH_SHORT).show();
+
                                 }
                             });
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    } catch (Exception e) {
                     }
                 }
             };
             t2.start();
-
         }
 
     @Override
@@ -142,8 +171,28 @@ public class MainActivity extends FragmentActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        t1.interrupt();
+        t2.interrupt();
+    }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if(t1.isAlive())
+//        t1.start();
+//        if(t2.isAlive())
+//        t2.start();
+//    }
+
+    @Override
     public void onBackPressed() {
-        if (pager.getCurrentItem() == 0) {
+        if(tabletSize)
+        {
+            super.onBackPressed();
+        }
+        else if (pager.getCurrentItem() == 0) {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed();
@@ -157,26 +206,17 @@ public class MainActivity extends FragmentActivity {
     private void showAddItemDialog(Context c) {
         LinearLayout layout = new LinearLayout(c);
         layout.setOrientation(LinearLayout.VERTICAL);
-        final TextView widthInfo = new TextView(c);
-        widthInfo.setText("Szerokość geograficzna");
         final EditText width = new EditText(c);
         width.setHint("Szerokość geograficzna");
         width.setText(Double.toString(DataProcessor.widthGeo));
-        layout.addView(widthInfo);
         layout.addView(width);
-        final TextView heightInfo = new TextView(c);
-        heightInfo.setText("Długość geograficzna");
         final EditText heigth = new EditText(c);
         heigth.setHint("Długość geograficzna");
         heigth.setText(Double.toString(DataProcessor.heightGeo));
-        layout.addView(heightInfo);
         layout.addView(heigth);
         final EditText refreshRate = new EditText(c);
-        final TextView refreshInfo = new TextView(c);
-        refreshInfo.setText("Czas odświeżania (minuty)");
-        refreshRate.setHint("Czas odświeżania (minuty)");
+        refreshRate.setHint("Czas odświeżania (sekundy)");
         refreshRate.setText(Integer.toString(DataProcessor.timeRefresh));
-        layout.addView(refreshInfo);
         layout.addView(refreshRate);
         AlertDialog dialog = new AlertDialog.Builder(c)
                 .setMessage("Ustawienia")
@@ -186,36 +226,14 @@ public class MainActivity extends FragmentActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         try {
                             if(Integer.valueOf(refreshRate.getText().toString())<=0)
-                                throw new NumberFormatException("Zly czas odswiezania");
+                                throw new Exception("Wpisz poprawne dane");
                             DataProcessor.update(Float.valueOf(width.getText().toString()), Float.valueOf(heigth.getText().toString()), Integer.valueOf(refreshRate.getText().toString()));
                             sun.update();
                             moon.update();
                             data.setText("Szerokość: " + DataProcessor.widthGeo + ", długość:" + DataProcessor.heightGeo);
-                            t2.interrupt();
-                            t2 = new Thread() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        while (!isInterrupted()) {
-                                            Thread.sleep(DataProcessor.timeRefresh * 1000 * 60);
-                                            runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    DataProcessor.refresh();
-                                                    sun.update();
-                                                    moon.update();
-                                                    System.out.println("Update time refresh");
-                                                }
-                                            });
-                                        }
-                                    } catch (InterruptedException e) {
-                                    }
-                                }
-                            };
-                            t2.start();
                         }
                         catch (Exception e) {
-                            Toast.makeText(getApplicationContext(),"Wpisz poprawne dane",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Wpisz poprawne dane", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -234,13 +252,13 @@ public class MainActivity extends FragmentActivity {
         FragmentManager fragmentManager;
         Fragment[] fragments;
 
-        ListPagerAdapter(FragmentManager fm){
+        public ListPagerAdapter(FragmentManager fm){
             fragmentManager = fm;
             fragments = new Fragment[2];
         }
 
         @Override
-        public void destroyItem(@NonNull ViewGroup container, int position,@NonNull Object object) {
+        public void destroyItem(ViewGroup container, int position, Object object) {
             assert(0 <= position && position < fragments.length);
             FragmentTransaction trans = fragmentManager.beginTransaction();
             trans.remove(fragments[position]);
@@ -249,7 +267,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         @Override
-        public Fragment instantiateItem(@NonNull ViewGroup container, int position){
+        public Fragment instantiateItem(ViewGroup container, int position){
             Fragment fragment = getItem(position);
             FragmentTransaction trans = fragmentManager.beginTransaction();
             trans.add(container.getId(),fragment,"fragment:"+position);
@@ -263,11 +281,11 @@ public class MainActivity extends FragmentActivity {
         }
 
         @Override
-        public boolean isViewFromObject(@NonNull View view,@NonNull Object fragment) {
+        public boolean isViewFromObject(View view, Object fragment) {
             return ((Fragment) fragment).getView() == view;
         }
 
-        Fragment getItem(int position){
+        public Fragment getItem(int position){
             assert(0 <= position && position < fragments.length);
             if(fragments[position] == null){
                 if(position==0)

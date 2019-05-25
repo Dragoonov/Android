@@ -1,6 +1,8 @@
 package com.example.astroweather;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -35,18 +37,14 @@ public class FragmentMoon extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_moon, container, false);
         view.setBackgroundColor(Color.BLACK);
+        DataProcessor.moonInflater = inflater;
+        DataProcessor.moonContainer = container;
         moonrise = view.findViewById(R.id.moonrise);
         age = view.findViewById(R.id.age);
         moonset = view.findViewById(R.id.moonset);
         newmoon = view.findViewById(R.id.newmoon);
         illumination = view.findViewById(R.id.illumination);
         fullmoon = view.findViewById(R.id.fullmoon);
-        moonrise.setText(DataProcessor.getMoonrise());
-        age.setText(DataProcessor.getAge());
-        moonset.setText(DataProcessor.getMoonset());
-        newmoon.setText(DataProcessor.getNewMoon());
-        illumination.setText(DataProcessor.getIllumination());
-        fullmoon.setText(DataProcessor.getFullMoon());
         update();
         return view;
     }
@@ -60,5 +58,7 @@ public class FragmentMoon extends Fragment {
         illumination.setText(DataProcessor.getIllumination());
         fullmoon.setText(DataProcessor.getFullMoon());
     }
+
+    // TODO: Rename method, update argument and hook method into UI event
 
 }
