@@ -2,46 +2,28 @@ package com.example.astroweather;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Handler;
-import android.provider.ContactsContract;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends FragmentActivity {
 
@@ -60,11 +42,12 @@ public class MainActivity extends FragmentActivity {
     TextView time;
     private TextView data;
     private Button fab;
+    private Button localizations;
     FragmentMoon moon = new FragmentMoon();
     FragmentSun sun = new FragmentSun();
     ViewPager pager;
     LinearLayout linearLayout;
-    PagerAdapter pagerAdapter;
+    ListPagerAdapter pagerAdapter;
     Thread t1 = null;
     Thread t2 = null;
     TimerTask task = new TimerTask() {
@@ -86,6 +69,17 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        localizations = findViewById(R.id.localizations);
+
+        localizations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LocalizationListActivity.class);
+                startActivity(intent);
+            }
+        });
+
         tabletSize = getResources().getBoolean(R.bool.isTablet);
         //DataProcessor d = DataProcessor.getInstance();
 
@@ -115,7 +109,7 @@ public class MainActivity extends FragmentActivity {
         time = findViewById(R.id.time);
         time.setText(DataProcessor.sdf.format(System.currentTimeMillis()));
         data = findViewById(R.id.data);
-        data.setText("Szerokość: " + DataProcessor.widthGeo + ", długość:" + DataProcessor.heightGeo);
+        data.setText("Szerokość: " + DataProcessor.widthGeo + "\nDługość: " + DataProcessor.heightGeo);
 
             t1 = new Thread() {
                 @Override
@@ -126,7 +120,7 @@ public class MainActivity extends FragmentActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    time.setText(DataProcessor.sdf.format(System.currentTimeMillis()));
+                                    time.setText("Czas: " + DataProcessor.sdf.format(System.currentTimeMillis()));
                                     System.out.println("Update time");
                                 }
                             });
@@ -248,11 +242,12 @@ public class MainActivity extends FragmentActivity {
      * one of the sections/tabs/pages.
      */
 
-    public class ListPagerAdapter extends PagerAdapter {
+    class ListPagerAdapter extends PagerAdapter {
+
         FragmentManager fragmentManager;
         Fragment[] fragments;
 
-        public ListPagerAdapter(FragmentManager fm){
+        ListPagerAdapter(FragmentManager fm) {
             fragmentManager = fm;
             fragments = new Fragment[2];
         }
@@ -297,4 +292,6 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+
 }
+
