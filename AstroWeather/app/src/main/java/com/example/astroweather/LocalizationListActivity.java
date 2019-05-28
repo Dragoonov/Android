@@ -80,42 +80,31 @@ public class LocalizationListActivity extends AppCompatActivity {
     {
         forecastDataModel = null;
         valid=true;
-        Thread t1 = new Thread(){
+        try{
+        ExampleRequest request = new ExampleRequest(Request.Method.GET, null, null, new Response.Listener() {
             @Override
-            public void run()
-            {
-                ExampleRequest request = new ExampleRequest(Request.Method.GET, null, null, new Response.Listener() {
-                    @Override
-                    public void onResponse(Object response) {
-                        SharedPreferences sharedPreferences = getSharedPreferences(localizationData, MODE_PRIVATE);
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
-                        Gson gson = gsonBuilder.create();
-                        String jsonString = response.toString();
-                        forecastDataModel = gson.fromJson(jsonString, ForecastDataModel.class);
-                        if(Integer.valueOf(forecastDataModel.location.woeid)==0) {
-                            Toast.makeText(getApplicationContext(), "Nie udalo sie zapisac lokalizacji. Sprawdz nazwe lub polaczenie internetowe", Toast.LENGTH_LONG).show();
-                            valid = false;
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), "Nie udalo sie zapisac lokalizacji. Sprawdz nazwe lub polaczenie internetowe", Toast.LENGTH_LONG).show();
-                        valid = false;
-                    }
-                });
-                ExampleRequestManager requestManager = ExampleRequestManager.getInstance(getApplicationContext());
-                request.setCity(localizationData);
-                requestManager.addToRequestQueue(request);
+            public void onResponse(Object response) {
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+                Gson gson = gsonBuilder.create();
+                String jsonString = response.toString();
+                forecastDataModel = gson.fromJson(jsonString, ForecastDataModel.class);
+                if(forecastDataModel.location.woeid==null) valid = false;
             }
-        };
-        t1.start();
-        try {
-            t1.join();
-        }catch (Exception e){
-            e.printStackTrace();
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                valid = false;
+            }
+        });
+        ExampleRequestManager requestManager = ExampleRequestManager.getInstance(getApplicationContext());
+        request.setCity(localizationData);
+        requestManager.addToRequestQueue(request);
+        }catch (Exception e)
+        {
+            Toast.makeText(getApplicationContext(), "Nie znaleziono lokalizacji. Dane moga byc nieprawidlowe", Toast.LENGTH_LONG).show();
         }
+
         return valid;
     }
 
@@ -137,7 +126,7 @@ public class LocalizationListActivity extends AppCompatActivity {
         addLocalization.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if(!validateName(editLocalization.getText().toString())) return;
+                if(!validateName(editLocalization.getText().toString())) return;
                 final Button button = new Button(getApplicationContext());
                 button.setText(editLocalization.getText());
                 button.setBackgroundColor(Color.parseColor("#AAAAAA"));
